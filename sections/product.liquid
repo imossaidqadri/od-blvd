@@ -12,15 +12,15 @@
 <div class="product min-h-screen">
   <!-- Image Gallery -->
   <div class="product__gallery relative" id="product-gallery">
-    <div class="product__images flex overflow-x-scroll snap-x snap-mandatory md:grid md:grid-cols-2 md:gap-2.5 md:overflow-visible">
+    <div class="product__images flex overflow-x-scroll gap-2.5">
       {% for image in product_images %}
-        <div class="product__image-wrapper shrink-0 w-full snap-center" data-image-index="{{ forloop.index0 }}">
+        <div class="product__image-wrapper shrink-0 w-full md:w-[calc((100%_-_20px)_/_3)]" data-image-index="{{ forloop.index0 }}">
           {% render 'image',
             image: image,
             width: 1500,
             lazy: true,
             srcset: true,
-            sizes: '(min-width: 768px) 50vw, 100vw',
+            sizes: '(min-width: 768px) 33vw, 100vw',
             class: 'product__image'
           %}
         </div>
@@ -39,101 +39,108 @@
   </div>
 
   <!-- Product Info -->
-  <div class="product__info p-5">
-    <!-- Column 1: Title, Price, Variants, Add to Cart -->
-    <div class="product__info-main">
-      <h1 class="product__title uppercase text-base mb-2.5">{{ product.title }}</h1>
+  <div class="product__info grid gap-[10px] pt-[10px] sm:pb-[30px] md:grid-cols-3">
+    <!-- Column 1: Title, Price, Variants, Add to Cart (Split into 2 sub-columns) -->
+    <div class="flex gap-[10px] leading-[1.2] child:flex-1">
+      <!-- Sub-column 1: Title & Price -->
+      <div>
+        <h1 class="product__title uppercase">{{ product.title }}</h1>
+        <div class="product__price pt-[10px] tracking-wide">{{ current_variant.price | money }}</div>
+      </div>
 
-      <p class="product__price text-base mb-5">{{ current_variant.price | money }}</p>
-
-      {% form 'product', product, class: 'product__form' %}
-        <!-- Variant Selector -->
-        {% unless product.has_only_default_variant %}
-          <div class="product__variants mb-5">
-            {% for option in product.options_with_values %}
-              <div class="product__option mb-2.5">
-                <div class="product__option-buttons flex gap-x-5 gap-y-2.5">
-                  {% for value in option.values %}
-                    {% liquid
-                      assign option_disabled = true
-                      for variant in product.variants
-                        if variant.available
-                          case option.position
-                            when 1
-                              if variant.option1 == value
-                                assign option_disabled = false
-                              endif
-                            when 2
-                              if variant.option2 == value
-                                assign option_disabled = false
-                              endif
-                            when 3
-                              if variant.option3 == value
-                                assign option_disabled = false
-                              endif
-                          endcase
-                        endif
-                      endfor
-                    %}
-                    <button
-                      type="button"
-                      class="product__variant-btn{% if option_disabled %} product__variant-btn--disabled{% endif %}"
-                      data-option-position="{{ option.position }}"
-                      data-option-value="{{ value | escape }}"
-                      {% if option_disabled %}disabled{% endif %}
-                    >
-                      {{ value }}
-                    </button>
-                  {% endfor %}
+      <!-- Sub-column 2: Variants & Add to Cart -->
+      <div>
+        {% form 'product', product, class: 'product__form' %}
+          <!-- Variant Selector -->
+          {% unless product.has_only_default_variant %}
+            <div class="product__variants">
+              {% for option in product.options_with_values %}
+                <div class="product__option">
+                  <div class="product__option-buttons flex flex-row flex-wrap justify-end gap-[20px] gap-y-[10px] text-right md:justify-start md:gap-[10px] md:text-left">
+                    {% for value in option.values %}
+                      {% liquid
+                        assign option_disabled = true
+                        for variant in product.variants
+                          if variant.available
+                            case option.position
+                              when 1
+                                if variant.option1 == value
+                                  assign option_disabled = false
+                                endif
+                              when 2
+                                if variant.option2 == value
+                                  assign option_disabled = false
+                                endif
+                              when 3
+                                if variant.option3 == value
+                                  assign option_disabled = false
+                                endif
+                            endcase
+                          endif
+                        endfor
+                      %}
+                      <button
+                        type="button"
+                        class="product__variant-btn text-primary uppercase md:pr-4 text-black{% if option_disabled %} product__variant-btn--disabled{% endif %}"
+                        data-option-position="{{ option.position }}"
+                        data-option-value="{{ value | escape }}"
+                        {% if option_disabled %}disabled{% endif %}
+                      >
+                        {{ value }}
+                      </button>
+                    {% endfor %}
+                  </div>
                 </div>
-              </div>
-            {% endfor %}
-
-            <select name="id" id="product-select" class="hidden">
-              {% for variant in product.variants %}
-                <option
-                  value="{{ variant.id }}"
-                  {% if variant == current_variant %}selected{% endif %}
-                  {% unless variant.available %}disabled{% endunless %}
-                >
-                  {{ variant.title }}
-                </option>
               {% endfor %}
-            </select>
-          </div>
-        {% else %}
-          <input type="hidden" name="id" value="{{ current_variant.id }}">
-        {% endunless %}
 
-        <!-- Add to Cart -->
-        <button
-          type="submit"
-          name="add"
-          class="product__add-to-cart text-base mb-5"
-          {% unless current_variant.available %}disabled{% endunless %}
-        >
-          {% if current_variant.available %}
-            Add to Cart
+              <select name="id" id="product-select" class="hidden">
+                {% for variant in product.variants %}
+                  <option
+                    value="{{ variant.id }}"
+                    {% if variant == current_variant %}selected{% endif %}
+                    {% unless variant.available %}disabled{% endunless %}
+                  >
+                    {{ variant.title }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
           {% else %}
-            Sold Out
-          {% endif %}
-        </button>
-      {% endform %}
+            <input type="hidden" name="id" value="{{ current_variant.id }}">
+          {% endunless %}
+
+          <!-- Add to Cart -->
+          <div class="m flex justify-end gap-[10px] text-right md:justify-start md:text-left">
+            <button
+              type="submit"
+              name="add"
+              class="product__add-to-cart h-fit cursor-pointer pt-[10px] text-right font-medium transition-opacity duration-100 hover:opacity-50 text-black"
+              {% unless current_variant.available %}disabled{% endunless %}
+            >
+              {% if current_variant.available %}
+                Add to Cart
+              {% else %}
+                Sold Out
+              {% endif %}
+            </button>
+          </div>
+        {% endform %}
+      </div>
     </div>
 
     <!-- Column 2: Product Description -->
-    <div class="product__info-description">
+    <div class="product__info-description" id="desc">
       {% if product.description != blank %}
-        <div class="product__description text-base">
+        <div class="product__description">
           {{ product.description }}
         </div>
       {% endif %}
     </div>
 
     <!-- Column 3: Additional Info -->
-    <div class="product__info-additional">
+    <div class="product__info-additional flex flex-col items-start gap-[10px]">
       {% if section.settings.show_sizing_chart and section.settings.sizing_chart_page != blank %}
-        <button type="button" class="product__sizing-chart text-base" onclick="window.open('{{ section.settings.sizing_chart_page.url }}', '_blank')">
+        <button type="button" class="product__sizing-chart order-first cursor-pointer transition-opacity duration-100 hover:opacity-50 sm:order-last" onclick="window.open('{{ section.settings.sizing_chart_page.url }}', '_blank')">
           View Sizing Chart
         </button>
       {% endif %}
@@ -162,25 +169,6 @@
       margin-bottom: 20px;
     }
 
-    .product__images {
-      display: flex;
-      overflow-x: scroll;
-      scroll-snap-type: none;
-      gap: 10px;
-    }
-
-    .product__image-wrapper {
-      flex-shrink: 0;
-      width: auto;
-    }
-
-    .product__info {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      padding: 0 20px;
-    }
-
     .product__nav {
       display: none !important;
     }
@@ -189,24 +177,22 @@
   .product__images {
     scrollbar-width: none;
     -ms-overflow-style: none;
+    scroll-snap-type: x mandatory;
   }
 
   .product__images::-webkit-scrollbar {
     display: none;
   }
 
-  .product__info {
-    display: block;
-  }
-
-  .product__info-main,
-  .product__info-description,
-  .product__info-additional {
-    display: block;
-  }
-
   .product__image-wrapper {
     position: relative;
+    scroll-snap-align: start;
+  }
+
+  @media (min-width: 768px) {
+    .product__images {
+      scroll-snap-type: none;
+    }
   }
 
   .product__nav {
@@ -236,17 +222,16 @@
   }
 
   .product__price {
-    font-weight: 400;
+    font-weight: 500;
   }
 
   .product__variant-btn {
     background: none;
     border: none;
-    padding: 0 12px 0 0;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 12px;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
     cursor: pointer;
-    text-transform: uppercase;
     transition: opacity 0.1s ease;
   }
 
@@ -267,17 +252,11 @@
   .product__add-to-cart {
     background: none;
     border: none;
-    padding: 10px 0 0;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
     width: auto;
     text-transform: none;
-    transition: opacity 0.1s ease;
-  }
-
-  .product__add-to-cart:hover:not(:disabled) {
-    opacity: 0.5;
   }
 
   .product__add-to-cart:disabled {
@@ -285,12 +264,7 @@
     cursor: not-allowed;
   }
 
-  .product__description {
-    margin-top: 20px;
-  }
-
   .product__description p {
-    margin-bottom: 5px;
     text-transform: uppercase;
   }
 
@@ -298,15 +272,15 @@
     background: none;
     border: none;
     padding: 0;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 12px;
+    font-family: inherit;
+    font-size: inherit;
     cursor: pointer;
-    text-decoration: underline;
     text-transform: capitalize;
   }
 
-  .product__sizing-chart:hover {
-    opacity: 0.5;
+  /* Child selector support for older browsers */
+  .child\:flex-1 > * {
+    flex: 1 1 0%;
   }
 {% endstylesheet %}
 

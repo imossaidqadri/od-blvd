@@ -11,7 +11,10 @@
   "sections": {
     "main": {
       "type": "product",
-      "settings": {}
+      "settings": {
+        "show_sizing_chart": true,
+        "sizing_chart_page": ""
+      }
     }
   },
   "order": [

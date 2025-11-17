@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import plugin from 'tailwindcss/plugin'
+
 export default {
   content: [
     './layout/**/*.liquid',
@@ -38,5 +40,10 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function({ addVariant }) {
+      addVariant('child', '& > *')
+      addVariant('child-hover', '& > *:hover')
+    }),
+  ],
 }
