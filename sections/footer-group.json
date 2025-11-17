@@ -14,7 +14,11 @@
     "footer": {
       "type": "footer",
       "settings": {
-        "menu": ""
+        "instagram_url": "https://www.instagram.com/boulevard.pakistan/",
+        "facebook_url": "",
+        "twitter_url": "",
+        "terms_url": "shopify://policies/terms-of-service",
+        "privacy_url": "shopify://policies/refund-policy"
       }
     }
   },
