@@ -16,11 +16,25 @@ export default {
       fontFamily: {
         primary: 'var(--font-primary--family)',
       },
+      fontSize: {
+        'xs': '0.75rem',
+        'base': '12px',
+      },
+      lineHeight: {
+        'tight': '114%',
+        'normal': '1.5',
+      },
       spacing: {
         'page-margin': 'var(--page-margin)',
+        '2.5': '10px',
+        '5': '20px',
       },
       maxWidth: {
         'page': 'var(--page-width)',
+      },
+      gap: {
+        '2.5': '10px',
+        '5': '20px',
       },
     },
   },

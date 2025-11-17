@@ -1,4 +1,4 @@
-<div class="fixed top-0 left-0 right-0 z-10 bg-white">
+<div class="header-wrapper fixed top-0 left-0 right-0 z-10 bg-white">
   <!-- Mobile Menu Overlay -->
   <div id="mobile-menu" class="fixed flex h-[100dvh] w-screen flex-col justify-between gap-[10px] bg-white p-5 md:hidden hidden" style="z-index: 50;">
     <!-- Close Button -->
@@ -59,13 +59,16 @@
 <div style="height: 53.68px;"></div>
 
 {% stylesheet %}
+  .header-wrapper {
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
   .header {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 0.75rem;
     font-weight: 500;
     color: var(--color-foreground, #000000);
-    max-width: var(--page-width);
-    margin: 0 auto;
   }
 
   .header__link {

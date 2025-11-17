@@ -3,9 +3,11 @@
     &copy; {{ 'now' | date: '%Y' }} {{ settings.brand_name }}
   </a>
 
-  <a href="https://otherdev.com" target="_blank" rel="noopener" class="footer__link footer__link--credit block uppercase md:hidden">
-    Credit
-  </a>
+  {% if section.settings.studio_visits_url != blank %}
+    <a href="{{ section.settings.studio_visits_url }}" class="footer__link footer__link--credit hidden md:block md:col-span-2">
+      Studio Visits
+    </a>
+  {% endif %}
 
   {% if section.settings.instagram_url != blank %}
     <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener" class="footer__link footer__link--nav hidden md:block md:col-span-2">
@@ -61,6 +63,15 @@
 {
   "name": "t:general.footer",
   "settings": [
+    {
+      "type": "header",
+      "content": "Footer Links"
+    },
+    {
+      "type": "url",
+      "id": "studio_visits_url",
+      "label": "Studio Visits URL"
+    },
     {
       "type": "header",
       "content": "t:general.social_media"

@@ -1,50 +1,429 @@
 {% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
+  Product page section with Bryan Jimenez inspired minimal design.
+  Features image gallery with navigation and minimal product info layout.
 {% endcomment %}
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
-</div>
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign product_images = product.images
+  assign featured_image = product.featured_image
+%}
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
-
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
-
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
+<div class="product min-h-screen">
+  <!-- Image Gallery -->
+  <div class="product__gallery relative" id="product-gallery">
+    <div class="product__images flex overflow-x-scroll snap-x snap-mandatory md:grid md:grid-cols-2 md:gap-2.5 md:overflow-visible">
+      {% for image in product_images %}
+        <div class="product__image-wrapper shrink-0 w-full snap-center" data-image-index="{{ forloop.index0 }}">
+          {% render 'image',
+            image: image,
+            width: 1500,
+            lazy: true,
+            srcset: true,
+            sizes: '(min-width: 768px) 50vw, 100vw',
+            class: 'product__image'
+          %}
+        </div>
       {% endfor %}
-    </select>
+    </div>
 
-    <input type="text" name="quantity" min="1" value="1">
+    <!-- Navigation Buttons (Mobile Only) -->
+    {% if product_images.size > 1 %}
+      <button type="button" class="product__nav product__nav--prev md:hidden" aria-label="Previous image">
+        Previous
+      </button>
+      <button type="button" class="product__nav product__nav--next md:hidden" aria-label="Next image">
+        Next
+      </button>
+    {% endif %}
+  </div>
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
+  <!-- Product Info -->
+  <div class="product__info p-5">
+    <!-- Column 1: Title, Price, Variants, Add to Cart -->
+    <div class="product__info-main">
+      <h1 class="product__title uppercase text-base mb-2.5">{{ product.title }}</h1>
+
+      <p class="product__price text-base mb-5">{{ current_variant.price | money }}</p>
+
+      {% form 'product', product, class: 'product__form' %}
+        <!-- Variant Selector -->
+        {% unless product.has_only_default_variant %}
+          <div class="product__variants mb-5">
+            {% for option in product.options_with_values %}
+              <div class="product__option mb-2.5">
+                <div class="product__option-buttons flex gap-x-5 gap-y-2.5">
+                  {% for value in option.values %}
+                    {% liquid
+                      assign option_disabled = true
+                      for variant in product.variants
+                        if variant.available
+                          case option.position
+                            when 1
+                              if variant.option1 == value
+                                assign option_disabled = false
+                              endif
+                            when 2
+                              if variant.option2 == value
+                                assign option_disabled = false
+                              endif
+                            when 3
+                              if variant.option3 == value
+                                assign option_disabled = false
+                              endif
+                          endcase
+                        endif
+                      endfor
+                    %}
+                    <button
+                      type="button"
+                      class="product__variant-btn{% if option_disabled %} product__variant-btn--disabled{% endif %}"
+                      data-option-position="{{ option.position }}"
+                      data-option-value="{{ value | escape }}"
+                      {% if option_disabled %}disabled{% endif %}
+                    >
+                      {{ value }}
+                    </button>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+
+            <select name="id" id="product-select" class="hidden">
+              {% for variant in product.variants %}
+                <option
+                  value="{{ variant.id }}"
+                  {% if variant == current_variant %}selected{% endif %}
+                  {% unless variant.available %}disabled{% endunless %}
+                >
+                  {{ variant.title }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        {% else %}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+        {% endunless %}
+
+        <!-- Add to Cart -->
+        <button
+          type="submit"
+          name="add"
+          class="product__add-to-cart text-base mb-5"
+          {% unless current_variant.available %}disabled{% endunless %}
+        >
+          {% if current_variant.available %}
+            Add to Cart
+          {% else %}
+            Sold Out
+          {% endif %}
+        </button>
+      {% endform %}
+    </div>
+
+    <!-- Column 2: Product Description -->
+    <div class="product__info-description">
+      {% if product.description != blank %}
+        <div class="product__description text-base">
+          {{ product.description }}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Column 3: Additional Info -->
+    <div class="product__info-additional">
+      {% if section.settings.show_sizing_chart and section.settings.sizing_chart_page != blank %}
+        <button type="button" class="product__sizing-chart text-base" onclick="window.open('{{ section.settings.sizing_chart_page.url }}', '_blank')">
+          View Sizing Chart
+        </button>
+      {% endif %}
+    </div>
+  </div>
 </div>
+
+{% stylesheet %}
+  .product {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.14;
+  }
+
+  .product__gallery {
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .product {
+      display: block;
+    }
+
+    .product__gallery {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .product__images {
+      display: flex;
+      overflow-x: scroll;
+      scroll-snap-type: none;
+      gap: 10px;
+    }
+
+    .product__image-wrapper {
+      flex-shrink: 0;
+      width: auto;
+    }
+
+    .product__info {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 0 20px;
+    }
+
+    .product__nav {
+      display: none !important;
+    }
+  }
+
+  .product__images {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .product__images::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product__info {
+    display: block;
+  }
+
+  .product__info-main,
+  .product__info-description,
+  .product__info-additional {
+    display: block;
+  }
+
+  .product__image-wrapper {
+    position: relative;
+  }
+
+  .product__nav {
+    position: fixed;
+    bottom: 20px;
+    background: none;
+    border: none;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    text-transform: capitalize;
+    cursor: pointer;
+    padding: 0;
+    z-index: 10;
+    color: var(--color-foreground, #000);
+  }
+
+  .product__nav--prev {
+    left: 20px;
+  }
+
+  .product__nav--next {
+    right: 20px;
+  }
+
+  .product__title {
+    font-weight: 500;
+  }
+
+  .product__price {
+    font-weight: 400;
+  }
+
+  .product__variant-btn {
+    background: none;
+    border: none;
+    padding: 0 12px 0 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: opacity 0.1s ease;
+  }
+
+  .product__variant-btn:hover:not(.product__variant-btn--disabled) {
+    opacity: 0.5;
+  }
+
+  .product__variant-btn--disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+
+  .product__variant-btn.selected {
+    text-decoration: underline;
+  }
+
+  .product__add-to-cart {
+    background: none;
+    border: none;
+    padding: 10px 0 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    width: auto;
+    text-transform: none;
+    transition: opacity 0.1s ease;
+  }
+
+  .product__add-to-cart:hover:not(:disabled) {
+    opacity: 0.5;
+  }
+
+  .product__add-to-cart:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .product__description {
+    margin-top: 20px;
+  }
+
+  .product__description p {
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+
+  .product__sizing-chart {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-transform: capitalize;
+  }
+
+  .product__sizing-chart:hover {
+    opacity: 0.5;
+  }
+{% endstylesheet %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const gallery = document.getElementById('product-gallery');
+    const imagesContainer = gallery.querySelector('.product__images');
+    const images = gallery.querySelectorAll('.product__image-wrapper');
+    const prevBtn = gallery.querySelector('.product__nav--prev');
+    const nextBtn = gallery.querySelector('.product__nav--next');
+    const variantButtons = document.querySelectorAll('.product__variant-btn');
+    const variantSelect = document.getElementById('product-select');
+
+    let currentIndex = 0;
+
+    // Image navigation
+    if (prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          scrollToImage(currentIndex);
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        if (currentIndex < images.length - 1) {
+          currentIndex++;
+          scrollToImage(currentIndex);
+        }
+      });
+    }
+
+    function scrollToImage(index) {
+      const image = images[index];
+      if (image) {
+        image.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      }
+    }
+
+    // Variant selection
+    if (variantButtons.length > 0 && variantSelect) {
+      const selectedOptions = {};
+
+      // Initialize selected options from current variant
+      const currentOption = variantSelect.options[variantSelect.selectedIndex];
+      if (currentOption) {
+        const variantTitle = currentOption.text.split(' - ')[0];
+        const optionValues = variantTitle.split(' / ');
+
+        variantButtons.forEach(btn => {
+          const position = btn.dataset.optionPosition;
+          const value = btn.dataset.optionValue;
+          if (optionValues.includes(value)) {
+            selectedOptions[position] = value;
+            btn.classList.add('selected');
+          }
+        });
+      }
+
+      variantButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (this.disabled) return;
+
+          const position = this.dataset.optionPosition;
+          const value = this.dataset.optionValue;
+
+          // Update selected options
+          selectedOptions[position] = value;
+
+          // Update button states
+          document.querySelectorAll(`[data-option-position="${position}"]`).forEach(b => {
+            b.classList.remove('selected');
+          });
+          this.classList.add('selected');
+
+          // Find matching variant
+          const matchingVariant = Array.from(variantSelect.options).find(option => {
+            const variantTitle = option.text.split(' - ')[0];
+            const optionValues = variantTitle.split(' / ');
+
+            return Object.values(selectedOptions).every(val => optionValues.includes(val));
+          });
+
+          if (matchingVariant) {
+            variantSelect.value = matchingVariant.value;
+
+            // Update add to cart button
+            const addToCartBtn = document.querySelector('.product__add-to-cart');
+            const variant = {{ product.variants | json }}.find(v => v.id == matchingVariant.value);
+
+            if (variant) {
+              addToCartBtn.disabled = !variant.available;
+              addToCartBtn.textContent = variant.available ? 'Add to Cart' : 'Sold Out';
+            }
+          }
+        });
+      });
+    }
+  });
+</script>
 
 {% schema %}
 {
-  "name": "t:general.product",
-  "settings": [],
+  "name": "Product",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_sizing_chart",
+      "label": "Show sizing chart button",
+      "default": false
+    },
+    {
+      "type": "page",
+      "id": "sizing_chart_page",
+      "label": "Sizing chart page"
+    }
+  ],
   "disabled_on": {
     "groups": ["header", "footer"]
   }
