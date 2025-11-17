@@ -50,9 +50,15 @@
 
       <!-- Sub-column 2: Variants & Add to Cart -->
       <div>
+        {% comment %}
+          DEBUG: has_only_default_variant={{ product.has_only_default_variant }},
+          variants_count={{ product.variants.size }},
+          options_count={{ product.options_with_values.size }}
+        {% endcomment %}
+
         {% form 'product', product, class: 'product__form' %}
           <!-- Variant Selector -->
-          {% unless product.has_only_default_variant %}
+          {% if product.options_with_values.size > 0 and product.options_with_values.first.name != 'Title' %}
             <div class="product__variants">
               {% for option in product.options_with_values %}
                 <div class="product__option">
@@ -61,22 +67,20 @@
                       {% liquid
                         assign option_disabled = true
                         for variant in product.variants
-                          if variant.available
-                            case option.position
-                              when 1
-                                if variant.option1 == value
-                                  assign option_disabled = false
-                                endif
-                              when 2
-                                if variant.option2 == value
-                                  assign option_disabled = false
-                                endif
-                              when 3
-                                if variant.option3 == value
-                                  assign option_disabled = false
-                                endif
-                            endcase
-                          endif
+                          case option.position
+                            when 1
+                              if variant.option1 == value and variant.available
+                                assign option_disabled = false
+                              endif
+                            when 2
+                              if variant.option2 == value and variant.available
+                                assign option_disabled = false
+                              endif
+                            when 3
+                              if variant.option3 == value and variant.available
+                                assign option_disabled = false
+                              endif
+                          endcase
                         endfor
                       %}
                       <button
@@ -107,7 +111,7 @@
             </div>
           {% else %}
             <input type="hidden" name="id" value="{{ current_variant.id }}">
-          {% endunless %}
+          {% endif %}
 
           <!-- Add to Cart -->
           <div class="m flex justify-end gap-[10px] text-right md:justify-start md:text-left">
