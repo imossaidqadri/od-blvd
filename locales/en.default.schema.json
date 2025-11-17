@@ -4,6 +4,7 @@
     "article": "Article",
     "block": "Block",
     "blog": "Blog",
+    "branding": "Branding",
     "cart": "Cart",
     "collection": "Collection",
     "collections": "Collections",
@@ -17,18 +18,22 @@
     "footer": "Footer",
     "group": "Group",
     "header": "Header",
+    "inputs": "Inputs",
     "layout": "Layout",
     "main": "Main",
     "page": "Page",
     "password": "Password",
     "primary": "Primary",
     "product": "Product",
+    "product_card": "Product card",
+    "product_grid": "Product grid",
     "row": "Row",
     "search": "Search",
     "secondary": "Secondary",
     "section": "Section",
     "settings": "Settings",
     "sidebar": "Sidebar",
+    "social_media": "Social media",
     "text": "Text",
     "theme": "Theme",
     "typography": "Typography"
@@ -36,18 +41,40 @@
   "labels": {
     "alignment": "Alignment",
     "background": "Background",
+    "brand_name": "Brand name",
+    "collection": "Collection",
+    "columns_desktop": "Columns on desktop",
+    "columns_tablet": "Columns on tablet",
+    "columns_mobile": "Columns on mobile",
+    "facebook_url": "Facebook URL",
+    "footer_background": "Footer background color",
+    "footer_text": "Footer text color",
     "foreground": "Foreground",
     "grid_gap": "Grid spacing",
     "grid_item_width": "Grid item width",
     "input_corner_radius": "Input corner radius",
+    "instagram_url": "Instagram URL",
     "layout_direction": "Layout direction",
+    "logo": "Logo image",
+    "logo_width": "Logo width",
     "menu": "Menu",
     "padding": "Padding",
     "page_margin": "Page margin",
     "page_width": "Page width",
+    "products_per_page": "Products per page",
+    "products_to_show": "Products to show",
+    "show_collection_title": "Show collection title",
+    "show_info_on_hover": "Show product info on hover",
     "show_payment_icons": "Show payment icons",
     "text_style": "Text style",
-    "text": "Text"
+    "text": "Text",
+    "twitter_url": "Twitter URL",
+    "youtube_url": "YouTube URL"
+  },
+  "info": {
+    "brand_name": "Used in header and footer",
+    "logo": "Shown instead of brand name when uploaded",
+    "show_overlay": "When enabled, product title and price appear on hover overlay instead of below image"
   },
   "options": {
     "alignment": {
@@ -71,6 +98,6 @@
       "title": "Title",
       "subtitle": "Subtitle",
       "normal": "Normal text"
-    },
+    }
   }
 }

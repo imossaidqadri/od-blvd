@@ -1,18 +1,21 @@
 {% comment %}
-  This section is used in the collection template to render collection page
-  listing all products within a collection.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
+  Reusable product grid section that displays products from a selected collection
+  in a bento/masonry grid layout. Can be added to any page via the theme editor.
 {% endcomment %}
 
-<div class="collection-page">
-  {% if section.settings.show_title %}
-    <h1 class="collection-page__title">{{ collection.title }}</h1>
+{% liquid
+  assign selected_collection = section.settings.collection
+  assign products_to_show = section.settings.products_count
+%}
+
+<div class="product-grid-section">
+  {% if section.settings.show_title and selected_collection.title != blank %}
+    <h2 class="product-grid-section__title">{{ selected_collection.title }}</h2>
   {% endif %}
 
-  {% paginate collection.products by section.settings.products_per_page %}
+  {% if selected_collection != blank and selected_collection.products_count > 0 %}
     <div class="product-grid" style="--columns-desktop: {{ section.settings.columns_desktop }}; --columns-tablet: {{ section.settings.columns_tablet }}; --columns-mobile: {{ section.settings.columns_mobile }}; --grid-gap: {{ section.settings.grid_gap }}px;">
-      {% for product in collection.products %}
+      {% for product in selected_collection.products limit: products_to_show %}
         {% assign index = forloop.index | modulo: 9 %}
         {% case index %}
           {% when 1 %}
@@ -54,24 +57,22 @@
         </a>
       {% endfor %}
     </div>
-
-    {% if paginate.pages > 1 %}
-      <div class="product-grid__pagination">
-        {{ paginate | default_pagination }}
-      </div>
-    {% endif %}
-  {% endpaginate %}
+  {% else %}
+    <div class="product-grid-section__empty">
+      <p>{{ 'sections.product_grid.no_products' | t }}</p>
+    </div>
+  {% endif %}
 </div>
 
 {% stylesheet %}
-  .collection-page {
+  .product-grid-section {
     max-width: var(--page-width);
     margin: 0 auto;
-    padding: 0 var(--page-margin);
+    padding: 3rem var(--page-margin);
   }
 
-  .collection-page__title {
-    margin: 2rem 0;
+  .product-grid-section__title {
+    margin: 0 0 2rem 0;
     font-size: 2rem;
     font-weight: 600;
     text-align: center;
@@ -82,7 +83,6 @@
     grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
     grid-auto-rows: 300px;
     gap: var(--grid-gap, 16px);
-    margin-bottom: 3rem;
   }
 
   .product-card {
@@ -169,10 +169,10 @@
     margin: 0;
   }
 
-  .product-grid__pagination {
-    display: flex;
-    justify-content: center;
-    padding: 2rem 0;
+  .product-grid-section__empty {
+    text-align: center;
+    padding: 3rem 0;
+    color: #999;
   }
 
   @media (max-width: 767px) {
@@ -206,13 +206,27 @@
 
 {% schema %}
 {
-  "name": "t:general.collection",
+  "name": "t:general.product_grid",
   "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:labels.collection"
+    },
     {
       "type": "checkbox",
       "id": "show_title",
       "label": "t:labels.show_collection_title",
-      "default": true
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "min": 6,
+      "max": 48,
+      "step": 3,
+      "label": "t:labels.products_to_show",
+      "default": 12
     },
     {
       "type": "header",
@@ -237,13 +251,14 @@
       "default": 2
     },
     {
-      "type": "range",
+      "type": "select",
       "id": "columns_mobile",
-      "min": 1,
-      "max": 2,
-      "step": 1,
       "label": "t:labels.columns_mobile",
-      "default": 1
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
     },
     {
       "type": "range",
@@ -256,15 +271,6 @@
       "default": 16
     },
     {
-      "type": "range",
-      "id": "products_per_page",
-      "min": 12,
-      "max": 50,
-      "step": 6,
-      "label": "t:labels.products_per_page",
-      "default": 24
-    },
-    {
       "type": "header",
       "content": "t:general.product_card"
     },
@@ -274,6 +280,11 @@
       "label": "t:labels.show_info_on_hover",
       "default": false,
       "info": "t:info.show_overlay"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.product_grid"
     }
   ]
 }

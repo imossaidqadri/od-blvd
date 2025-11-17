@@ -30,6 +30,9 @@
   "collections": {
     "title": "Collections"
   },
+  "general": {
+    "account": "Account"
+  },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",
     "card": "Gift card",
@@ -48,5 +51,10 @@
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "sections": {
+    "product_grid": {
+      "no_products": "No products to display. Please select a collection."
+    }
   }
 }

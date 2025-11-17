@@ -23,6 +23,34 @@
     ]
   },
   {
+    "name": "t:general.branding",
+    "settings": [
+      {
+        "type": "text",
+        "id": "brand_name",
+        "label": "t:labels.brand_name",
+        "default": "BLVD",
+        "info": "t:info.brand_name"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "t:labels.logo",
+        "info": "t:info.logo"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 50,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "t:labels.logo_width",
+        "default": 150
+      }
+    ]
+  },
+  {
     "name": "t:general.layout",
     "settings": [
       {
@@ -57,6 +85,10 @@
     "name": "t:general.colors",
     "settings": [
       {
+        "type": "header",
+        "content": "t:general.main"
+      },
+      {
         "type": "color",
         "id": "background_color",
         "default": "#FFFFFF",
@@ -67,6 +99,26 @@
         "id": "foreground_color",
         "default": "#333333",
         "label": "t:labels.foreground"
+      },
+      {
+        "type": "header",
+        "content": "t:general.footer"
+      },
+      {
+        "type": "color",
+        "id": "footer_background_color",
+        "default": "#1a1a1a",
+        "label": "t:labels.footer_background"
+      },
+      {
+        "type": "color",
+        "id": "footer_text_color",
+        "default": "#ffffff",
+        "label": "t:labels.footer_text"
+      },
+      {
+        "type": "header",
+        "content": "t:general.inputs"
       },
       {
         "type": "range",
