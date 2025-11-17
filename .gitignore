@@ -7,12 +7,20 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-node_modules/
 CLAUDE.md
 .claude
+
+# Dependencies
+node_modules/
+bun.lockb
+
+# Build artifacts
+index.ts
+tsconfig.json
+
 # Shopify CLI files
 .shopify/
 
-## Release files
+# Release files
 release
 *.zip
