@@ -9,12 +9,21 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
+    "product_grid_QfprHG": {
+      "type": "product-grid",
+      "name": "t:general.product_grid",
+      "settings": {
+        "collection": "frontpage",
+        "show_title": false,
+        "products_count": 48,
+        "columns_desktop": 3,
+        "columns_tablet": 2,
+        "columns_mobile": "1",
+        "grid_gap": 8
+      }
     }
   },
   "order": [
-    "main"
+    "product_grid_QfprHG"
   ]
 }

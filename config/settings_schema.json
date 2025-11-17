@@ -17,8 +17,9 @@
       {
         "type": "font_picker",
         "id": "type_primary_font",
-        "default": "work_sans_n4",
-        "label": "t:general.primary"
+        "default": "helvetica_n4",
+        "label": "t:general.primary",
+        "info": "Recommended: Helvetica for clean, minimalist aesthetic"
       }
     ]
   },
