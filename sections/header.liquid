@@ -1,4 +1,4 @@
-<div class="fixed top-0 z-10 w-full bg-white">
+<div class="fixed top-0 left-0 right-0 z-10 bg-white">
   <!-- Mobile Menu Overlay -->
   <div id="mobile-menu" class="fixed flex h-[100dvh] w-screen flex-col justify-between gap-[10px] bg-white p-5 md:hidden hidden" style="z-index: 50;">
     <!-- Close Button -->
@@ -64,6 +64,8 @@
     font-size: 0.75rem;
     font-weight: 500;
     color: var(--color-foreground, #000000);
+    max-width: var(--page-width);
+    margin: 0 auto;
   }
 
   .header__link {
