@@ -26,7 +26,11 @@
     "checkout": "Checkout",
     "title": "Cart",
     "update": "Update",
-    "remove": "Remove"
+    "remove": "Remove",
+    "close": "Close",
+    "empty": "Your cart is empty",
+    "quantity": "Quantity",
+    "total": "Total"
   },
   "customers": {
     "login": {

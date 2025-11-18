@@ -15,9 +15,9 @@
           {{ link.title }}
         </a>
       {% endfor %}
-      <a href="{{ routes.cart_url }}" class="header__link header__link--nav-mobile">
+      <button data-cart-trigger class="header__link header__link--nav-mobile header__link--cart-trigger">
         Cart
-      </a>
+      </button>
     </div>
 
     <div class="flex flex-col gap-[10px]">
@@ -45,9 +45,9 @@
       </a>
     {% endfor %}
 
-    <a href="{{ routes.cart_url }}" class="header__link header__link--cart hidden md:block group-hover:opacity-50 hover:!opacity-100" aria-label="{{ 'cart.title' | t }}">
+    <button data-cart-trigger class="header__link header__link--cart hidden md:block group-hover:opacity-50 hover:!opacity-100" aria-label="{{ 'cart.title' | t }}">
       Cart
-    </a>
+    </button>
 
     <button id="menu-toggle" class="header__link header__link--menu block md:hidden uppercase" aria-label="Toggle menu">
       Menu
@@ -93,12 +93,23 @@
     max-height: 2rem;
   }
 
-  .header__link--menu {
+  .header__link--menu,
+  .header__link--cart-trigger {
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
     text-transform: uppercase;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .header__link--cart {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 0.75rem;
     font-weight: 500;
