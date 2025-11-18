@@ -1,8 +1,9 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
-    {% # Resource hints for faster DNS resolution %}
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    {% # Resource hints for faster DNS resolution and connection %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.shopifycdn.com">
 
     {% # Inlined CSS Variables %}
@@ -22,6 +23,10 @@
         {{ settings.type_primary_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
       {% endunless %}
     {% endif %}
+
+    {% # Load Great Vibes font for logo (non-blocking with display=swap) %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" media="print" onload="this.media='all'"  noscript-fallback>
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap"></noscript>
 
     {% # Inlined Critical CSS for faster initial render %}
     <style>
@@ -144,7 +149,8 @@
       }
     </style>
 
-    {% # Load Tailwind CSS %}
+    {% # Preload and load Tailwind CSS for faster rendering %}
+    {{ 'tailwind.css' | asset_url | preload_tag: as: 'style' }}
     {{ 'tailwind.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}

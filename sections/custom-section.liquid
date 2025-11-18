@@ -1,7 +1,13 @@
 <div class="custom-section full-width">
   {% if section.settings.background_image %}
     <div class="custom-section__background">
-      {{ section.settings.background_image | image_url: width: 2000 | image_tag }}
+      {% render 'image',
+        image: section.settings.background_image,
+        width: 2400,
+        loading: 'lazy',
+        srcset: true,
+        sizes: '100vw'
+      %}
     </div>
   {% endif %}
 
