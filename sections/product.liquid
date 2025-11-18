@@ -38,9 +38,9 @@
     {% endif %}
   </div>
 
-  <!-- Desktop Navigation (hidden on mobile, visible sm+) -->
+  <!-- Desktop Navigation (hidden on mobile, visible md+) -->
   {% if product_images.size > 1 %}
-    <div class="flex hidden flex-row justify-between pr-[20px] pt-[10px] sm:flex md:grid md:grid-cols-3">
+    <div class="hidden flex-row justify-between pr-[20px] pt-[10px] md:flex md:grid md:grid-cols-3">
       <div>
         <button type="button" class="product__nav-desktop product__nav-desktop--prev hover:underline">
           Previous
@@ -173,7 +173,7 @@
     <!-- Column 3: Additional Info -->
     <div class="product__info-additional flex flex-col items-start gap-[10px]">
       <p>Please note that the lead time on this garment is between 7 to 14 business days.</p>
-      <p>Free shipping is available on all domestic orders.</p>
+      <p>Subjective free shipping is available on all domestic orders.</p>
       {% if section.settings.show_sizing_chart and section.settings.sizing_chart_page != blank %}
         <button type="button" class="product__sizing-chart order-first cursor-pointer transition-opacity duration-100 hover:opacity-50 sm:order-last" onclick="window.open('{{ section.settings.sizing_chart_page.url }}', '_blank')">
           View Sizing Chart
