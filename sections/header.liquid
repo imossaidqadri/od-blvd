@@ -29,15 +29,23 @@
 
   <!-- Main Header -->
   <header class="header group flex justify-between gap-[10px] px-5 pt-5 pb-2 md:pb-5 items-center md:grid md:grid-cols-12">
-    {% if settings.logo %}
-      <a href="{{ routes.root_url }}" class="header__link header__link--logo md:col-span-7 block">
-        {{ settings.logo | image_url: width: settings.logo_width | image_tag: alt: settings.brand_name }}
-      </a>
-    {% else %}
-      <a href="{{ routes.root_url }}" class="header__link header__link--brand md:col-span-7 block uppercase">
-        {{ settings.brand_name }}
-      </a>
-    {% endif %}
+    <a href="{{ routes.root_url }}" class="header__link header__link--logo md:col-span-7 block">
+      <svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" class="header__logo-svg">
+        <defs>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+            .logo-text {
+              font-family: 'Great Vibes', cursive;
+              font-size: 52px;
+              fill: currentColor;
+              stroke: currentColor;
+              stroke-width: 0.5;
+            }
+          </style>
+        </defs>
+        <text x="10" y="55" class="logo-text">Boulevard</text>
+      </svg>
+    </a>
 
     {% for link in section.settings.menu.links %}
       <a href="{{ link.url }}" class="header__link header__link--nav hidden md:block md:col-span-2 group-hover:opacity-50 hover:!opacity-100">
@@ -91,6 +99,12 @@
     display: block;
     height: auto;
     max-height: 2rem;
+  }
+
+  .header__logo-svg {
+    display: block;
+    height: 2rem;
+    width: auto;
   }
 
   .header__link--menu,
