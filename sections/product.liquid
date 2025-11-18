@@ -452,6 +452,47 @@
         });
       });
     }
+
+    // AJAX Add to Cart - Prevent redirect to /cart page
+    const productForm = document.querySelector('.product__form');
+    if (productForm) {
+      productForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const addToCartBtn = this.querySelector('.product__add-to-cart');
+        const originalText = addToCartBtn.textContent;
+
+        // Disable button and show loading state
+        addToCartBtn.disabled = true;
+        addToCartBtn.textContent = 'Adding...';
+
+        // Add to cart via AJAX
+        fetch('/cart/add.js', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to add to cart');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Store flag to open cart drawer after reload
+          sessionStorage.setItem('openCartDrawer', 'true');
+
+          // Reload page to update cart drawer content
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error('Error adding to cart:', error);
+          addToCartBtn.disabled = false;
+          addToCartBtn.textContent = originalText;
+          alert('Error adding item to cart. Please try again.');
+        });
+      });
+    }
   });
 </script>
 

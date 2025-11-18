@@ -147,6 +147,12 @@
       document.body.style.overflow = '';
     }
 
+    // Auto-open cart drawer after add to cart (from sessionStorage flag)
+    if (sessionStorage.getItem('openCartDrawer') === 'true') {
+      sessionStorage.removeItem('openCartDrawer');
+      openCartDrawer();
+    }
+
     // Listen for cart trigger clicks (event delegation)
     document.addEventListener('click', function(e) {
       if (e.target.closest('[data-cart-trigger]')) {
