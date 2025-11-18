@@ -19,7 +19,22 @@
         <a href="{{ product.url }}" class="product-card">
           <div class="product-card__image">
             {% if product.featured_image %}
-              {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', alt: product.title }}
+              {% liquid
+                # First 2 products use eager loading with high priority for LCP optimization
+                if forloop.index <= 2
+                  assign image_loading = 'eager'
+                  assign image_fetchpriority = 'high'
+                else
+                  assign image_loading = 'lazy'
+                  assign image_fetchpriority = 'auto'
+                endif
+              %}
+              {% render 'image',
+                image: product.featured_image,
+                width: 800,
+                loading: image_loading,
+                fetchpriority: image_fetchpriority
+              %}
             {% else %}
               {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}
             {% endif %}

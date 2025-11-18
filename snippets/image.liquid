@@ -13,7 +13,9 @@
   @param {number} [width] - The highest resolution width of the image to be rendered
   @param {number} [height] - The highest resolution height of the image to be rendered
   @param {string} [crop] - The crop position of the image
-  @param {boolean} [lazy] - Enable lazy loading with fade-in transition (default: false)
+  @param {boolean} [lazy] - DEPRECATED: Use loading parameter instead. Enable lazy loading with fade-in transition (default: false)
+  @param {string} [loading] - Image loading behavior: 'lazy', 'eager' (default: 'lazy')
+  @param {string} [fetchpriority] - Image fetch priority: 'high', 'low', 'auto' (default: 'auto')
   @param {boolean} [srcset] - Enable responsive srcset (default: false)
   @param {string} [sizes] - Optional sizes attribute for responsive images
 
@@ -52,10 +54,31 @@
     assign srcset_widths = '500,750,1500,2750'
     assign srcset_array = srcset_widths | split: ','
   endif
+
+  # Handle loading parameter (backward compatible with lazy boolean)
+  if loading
+    assign image_loading = loading
+  elsif lazy
+    assign image_loading = 'lazy'
+  else
+    assign image_loading = 'lazy'
+  endif
+
+  # Handle fetchpriority parameter
+  unless fetchpriority
+    assign fetchpriority = 'auto'
+  endunless
+
+  # Determine if we should show fade-in effect (only for lazy loaded images)
+  if image_loading == 'lazy'
+    assign show_fade = true
+  else
+    assign show_fade = false
+  endif
 %}
 
 <{{ wrapper }}
-  class="image {{ class }}{% if lazy %} image--lazy{% endif %}"
+  class="image {{ class }}{% if show_fade %} image--lazy{% endif %}"
   {% if url %}
     href="{{ url }}"
   {% endif %}
@@ -65,11 +88,13 @@
       src="{{ image | image_url: width: width, height: height, crop: crop }}"
       srcset="{% for srcset_width in srcset_array %}{{ image | image_url: width: srcset_width, height: height, crop: crop }} {{ srcset_width }}w{% unless forloop.last %},{% endunless %}{% endfor %}"
       {% if sizes %}sizes="{{ sizes }}"{% endif %}
-      {% if lazy %}loading="lazy" class="opacity-0"{% endif %}
+      loading="{{ image_loading }}"
+      fetchpriority="{{ fetchpriority }}"
+      {% if show_fade %}class="opacity-0"{% endif %}
       alt="{{ image.alt | escape }}"
     >
   {% else %}
-    {{ image | image_url: width: width, height: height, crop: crop | image_tag: loading: 'lazy' }}
+    {{ image | image_url: width: width, height: height, crop: crop | image_tag: loading: image_loading, fetchpriority: fetchpriority }}
   {% endif %}
 </{{ wrapper }}>
 
@@ -99,21 +124,3 @@
     opacity: 1;
   }
 {% endstylesheet %}
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const lazyImages = document.querySelectorAll('.image--lazy img');
-
-    lazyImages.forEach(img => {
-      if (img.complete) {
-        img.classList.add('loaded');
-        img.classList.remove('opacity-0');
-      } else {
-        img.addEventListener('load', function() {
-          img.classList.add('loaded');
-          img.classList.remove('opacity-0');
-        });
-      }
-    });
-  });
-</script>

@@ -15,10 +15,21 @@
     <div class="product__images flex overflow-x-scroll gap-2.5">
       {% for image in product_images %}
         <div class="product__image-wrapper shrink-0 w-full md:w-[calc((100%_-_20px)_/_3)]" data-image-index="{{ forloop.index0 }}">
+          {% liquid
+            # First image uses eager loading with high priority for LCP optimization
+            if forloop.first
+              assign image_loading = 'eager'
+              assign image_fetchpriority = 'high'
+            else
+              assign image_loading = 'lazy'
+              assign image_fetchpriority = 'auto'
+            endif
+          %}
           {% render 'image',
             image: image,
             width: 1500,
-            lazy: true,
+            loading: image_loading,
+            fetchpriority: image_fetchpriority,
             srcset: true,
             sizes: '(min-width: 768px) 33vw, 100vw',
             class: 'product__image'
@@ -339,162 +350,10 @@
 {% endstylesheet %}
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const gallery = document.getElementById('product-gallery');
-    const imagesContainer = gallery.querySelector('.product__images');
-    const images = gallery.querySelectorAll('.product__image-wrapper');
-    const prevBtn = gallery.querySelector('.product__nav--prev');
-    const nextBtn = gallery.querySelector('.product__nav--next');
-    const prevBtnDesktop = document.querySelector('.product__nav-desktop--prev');
-    const nextBtnDesktop = document.querySelector('.product__nav-desktop--next');
-    const variantButtons = document.querySelectorAll('.product__variant-btn');
-    const variantSelect = document.getElementById('product-select');
-
-    let currentIndex = 0;
-
-    // Image navigation
-    if (prevBtn && nextBtn) {
-      prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) {
-          currentIndex--;
-          scrollToImage(currentIndex);
-        }
-      });
-
-      nextBtn.addEventListener('click', () => {
-        if (currentIndex < images.length - 1) {
-          currentIndex++;
-          scrollToImage(currentIndex);
-        }
-      });
-    }
-
-    // Desktop image navigation
-    if (prevBtnDesktop && nextBtnDesktop) {
-      prevBtnDesktop.addEventListener('click', () => {
-        if (currentIndex > 0) {
-          currentIndex--;
-          scrollToImage(currentIndex);
-        }
-      });
-
-      nextBtnDesktop.addEventListener('click', () => {
-        if (currentIndex < images.length - 1) {
-          currentIndex++;
-          scrollToImage(currentIndex);
-        }
-      });
-    }
-
-    function scrollToImage(index) {
-      const image = images[index];
-      if (image) {
-        image.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-      }
-    }
-
-    // Variant selection
-    if (variantButtons.length > 0 && variantSelect) {
-      const selectedOptions = {};
-
-      // Initialize selected options from current variant
-      const currentOption = variantSelect.options[variantSelect.selectedIndex];
-      if (currentOption) {
-        const variantTitle = currentOption.text.split(' - ')[0];
-        const optionValues = variantTitle.split(' / ');
-
-        variantButtons.forEach(btn => {
-          const position = btn.dataset.optionPosition;
-          const value = btn.dataset.optionValue;
-          if (optionValues.includes(value)) {
-            selectedOptions[position] = value;
-            btn.classList.add('selected');
-          }
-        });
-      }
-
-      variantButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-          if (this.disabled) return;
-
-          const position = this.dataset.optionPosition;
-          const value = this.dataset.optionValue;
-
-          // Update selected options
-          selectedOptions[position] = value;
-
-          // Update button states
-          document.querySelectorAll(`[data-option-position="${position}"]`).forEach(b => {
-            b.classList.remove('selected');
-          });
-          this.classList.add('selected');
-
-          // Find matching variant
-          const matchingVariant = Array.from(variantSelect.options).find(option => {
-            const variantTitle = option.text.split(' - ')[0];
-            const optionValues = variantTitle.split(' / ');
-
-            return Object.values(selectedOptions).every(val => optionValues.includes(val));
-          });
-
-          if (matchingVariant) {
-            variantSelect.value = matchingVariant.value;
-
-            // Update add to cart button
-            const addToCartBtn = document.querySelector('.product__add-to-cart');
-            const variant = {{ product.variants | json }}.find(v => v.id == matchingVariant.value);
-
-            if (variant) {
-              addToCartBtn.disabled = !variant.available;
-              addToCartBtn.textContent = variant.available ? 'Add to Cart' : 'Sold Out';
-            }
-          }
-        });
-      });
-    }
-
-    // AJAX Add to Cart - Prevent redirect to /cart page
-    const productForm = document.querySelector('.product__form');
-    if (productForm) {
-      productForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-        const addToCartBtn = this.querySelector('.product__add-to-cart');
-        const originalText = addToCartBtn.textContent;
-
-        // Disable button and show loading state
-        addToCartBtn.disabled = true;
-        addToCartBtn.textContent = 'Adding...';
-
-        // Add to cart via AJAX
-        fetch('/cart/add.js', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to add to cart');
-          }
-          return response.json();
-        })
-        .then(data => {
-          // Store flag to open cart drawer after reload
-          sessionStorage.setItem('openCartDrawer', 'true');
-
-          // Reload page to update cart drawer content
-          window.location.reload();
-        })
-        .catch(error => {
-          console.error('Error adding to cart:', error);
-          addToCartBtn.disabled = false;
-          addToCartBtn.textContent = originalText;
-          alert('Error adding item to cart. Please try again.');
-        });
-      });
-    }
-  });
+  window.productVariants = {{ product.variants | json }};
 </script>
+
+<script src="{{ 'product.js' | asset_url }}" defer></script>
 
 {% schema %}
 {
