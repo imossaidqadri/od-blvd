@@ -97,7 +97,7 @@
                       %}
                       <button
                         type="button"
-                        class="product__variant-btn text-primary uppercase md:pr-4 text-black{% if option_disabled %} product__variant-btn--disabled{% endif %}"
+                        class="product__variant-btn text-primary uppercase md:pr-3 text-black{% if option_disabled %} product__variant-btn--disabled{% endif %}"
                         data-option-position="{{ option.position }}"
                         data-option-value="{{ value | escape }}"
                         {% if option_disabled %}disabled{% endif %}
@@ -168,7 +168,7 @@
   .product {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 12px;
-    line-height: 1.14;
+    line-height: 1.2;
   }
 
   .product__gallery {
@@ -268,7 +268,7 @@
   .product__add-to-cart {
     background: none;
     border: none;
-    padding: 0;
+    padding: 24px 0 0 0;
     font-family: inherit;
     font-size: inherit;
     width: auto;
@@ -280,8 +280,16 @@
     cursor: not-allowed;
   }
 
+  .product__info-description {
+    font-weight: 500;
+  }
+
   .product__description p {
     text-transform: uppercase;
+    font-weight: 500;
+    line-height: 1.2;
+    margin: 0;
+    padding: 0;
   }
 
   .product__sizing-chart {
