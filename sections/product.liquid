@@ -38,6 +38,23 @@
     {% endif %}
   </div>
 
+  <!-- Desktop Navigation (hidden on mobile, visible sm+) -->
+  {% if product_images.size > 1 %}
+    <div class="flex hidden flex-row justify-between pr-[20px] pt-[10px] sm:flex md:grid md:grid-cols-3">
+      <div>
+        <button type="button" class="product__nav-desktop product__nav-desktop--prev hover:underline">
+          Previous
+        </button>
+      </div>
+      <div></div>
+      <div class="flex justify-end">
+        <button type="button" class="product__nav-desktop product__nav-desktop--next hover:underline">
+          Next
+        </button>
+      </div>
+    </div>
+  {% endif %}
+
   <!-- Product Info -->
   <div class="product__info grid gap-[10px] pt-[10px] sm:pb-[30px] md:grid-cols-3">
     <!-- Column 1: Title, Price, Variants, Add to Cart (Split into 2 sub-columns) -->
@@ -155,6 +172,8 @@
 
     <!-- Column 3: Additional Info -->
     <div class="product__info-additional flex flex-col items-start gap-[10px]">
+      <p>Please note that the lead time on this garment is between 7 to 14 business days.</p>
+      <p>Free shipping is available on all domestic orders.</p>
       {% if section.settings.show_sizing_chart and section.settings.sizing_chart_page != blank %}
         <button type="button" class="product__sizing-chart order-first cursor-pointer transition-opacity duration-100 hover:opacity-50 sm:order-last" onclick="window.open('{{ section.settings.sizing_chart_page.url }}', '_blank')">
           View Sizing Chart
@@ -173,6 +192,7 @@
 
   .product__gallery {
     width: 100%;
+    margin-bottom: 0;
   }
 
   @media (min-width: 768px) {
@@ -182,7 +202,7 @@
 
     .product__gallery {
       width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: 0;
     }
 
     .product__nav {
@@ -231,6 +251,16 @@
 
   .product__nav--next {
     right: 20px;
+  }
+
+  .product__nav-desktop {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    text-transform: capitalize;
   }
 
   .product__title {
@@ -315,6 +345,8 @@
     const images = gallery.querySelectorAll('.product__image-wrapper');
     const prevBtn = gallery.querySelector('.product__nav--prev');
     const nextBtn = gallery.querySelector('.product__nav--next');
+    const prevBtnDesktop = document.querySelector('.product__nav-desktop--prev');
+    const nextBtnDesktop = document.querySelector('.product__nav-desktop--next');
     const variantButtons = document.querySelectorAll('.product__variant-btn');
     const variantSelect = document.getElementById('product-select');
 
@@ -330,6 +362,23 @@
       });
 
       nextBtn.addEventListener('click', () => {
+        if (currentIndex < images.length - 1) {
+          currentIndex++;
+          scrollToImage(currentIndex);
+        }
+      });
+    }
+
+    // Desktop image navigation
+    if (prevBtnDesktop && nextBtnDesktop) {
+      prevBtnDesktop.addEventListener('click', () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          scrollToImage(currentIndex);
+        }
+      });
+
+      nextBtnDesktop.addEventListener('click', () => {
         if (currentIndex < images.length - 1) {
           currentIndex++;
           scrollToImage(currentIndex);
