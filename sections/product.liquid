@@ -50,20 +50,32 @@
 
       <!-- Sub-column 2: Variants & Add to Cart -->
       <div>
-        {% comment %}
-          DEBUG: has_only_default_variant={{ product.has_only_default_variant }},
-          variants_count={{ product.variants.size }},
-          options_count={{ product.options_with_values.size }}
-        {% endcomment %}
-
         {% form 'product', product, class: 'product__form' %}
           <!-- Variant Selector -->
-          {% if product.options_with_values.size > 0 and product.options_with_values.first.name != 'Title' %}
+          {% if product.variants.size > 1 %}
             <div class="product__variants">
               {% for option in product.options_with_values %}
                 <div class="product__option">
+                  {% liquid
+                    # Sort size values from small to large
+                    assign size_order = 'XS,S,M,L,XL,XXL,XXXL' | split: ','
+                    assign sorted_values = ''
+                    for size in size_order
+                      if option.values contains size
+                        assign sorted_values = sorted_values | append: size | append: ','
+                      endif
+                    endfor
+                    assign sorted_values = sorted_values | split: ','
+
+                    # Use sorted values if we successfully sorted, otherwise use original
+                    if sorted_values.size > 0
+                      assign display_values = sorted_values
+                    else
+                      assign display_values = option.values
+                    endif
+                  %}
                   <div class="product__option-buttons flex flex-row flex-wrap justify-end gap-[20px] gap-y-[10px] text-right md:justify-start md:gap-[10px] md:text-left">
-                    {% for value in option.values %}
+                    {% for value in display_values %}
                       {% liquid
                         assign option_disabled = true
                         for variant in product.variants
