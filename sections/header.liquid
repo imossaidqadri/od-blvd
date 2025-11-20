@@ -11,7 +11,16 @@
 
     <div class="flex flex-col gap-[10px]">
       {% for link in section.settings.menu.links %}
-        <a href="{{ link.url }}" class="header__link header__link--nav-mobile">
+        {% liquid
+          if link.title == 'Contact'
+            assign link_url = 'https://wa.me/263777444182?text=Hello%20Boulevard%20team%2C%20I%27d%20like%20to%20get%20in%20touch'
+            assign link_target = '_blank'
+          else
+            assign link_url = link.url
+            assign link_target = '_self'
+          endif
+        %}
+        <a href="{{ link_url }}" target="{{ link_target }}" class="header__link header__link--nav-mobile">
           {{ link.title }}
         </a>
       {% endfor %}
@@ -47,7 +56,16 @@
     </a>
 
     {% for link in section.settings.menu.links %}
-      <a href="{{ link.url }}" class="header__link header__link--nav hidden md:block md:col-span-2 group-hover:opacity-50 hover:!opacity-100">
+      {% liquid
+        if link.title == 'Contact'
+          assign link_url = 'https://wa.me/263777444182?text=Hello%20Boulevard%20team%2C%20I%27d%20like%20to%20get%20in%20touch'
+          assign link_target = '_blank'
+        else
+          assign link_url = link.url
+          assign link_target = '_self'
+        endif
+      %}
+      <a href="{{ link_url }}" target="{{ link_target }}" class="header__link header__link--nav hidden md:block md:col-span-2 group-hover:opacity-50 hover:!opacity-100">
         {{ link.title }}
       </a>
     {% endfor %}
