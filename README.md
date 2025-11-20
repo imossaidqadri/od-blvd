@@ -1,15 +1,15 @@
 <h1 align="center" style="position: relative;">
   <br>
-    <img src="./assets/shoppy-x-ray.svg" alt="logo" width="200">
+    <img src="./assets/logo-boulevard.svg" alt="logo" width="200">
   <br>
-  Shopify Skeleton Theme
+  Boulevard Shopify Theme
 </h1>
 
-A minimal, carefully structured Shopify theme designed to help you quickly get started. Designed with modularity, maintainability, and Shopify's best practices in mind.
+A modern, carefully structured Shopify theme designed for e-commerce success. Built with modularity, maintainability, and Shopify's best practices in mind.
+Based on Shopify's skeleton theme with customizations by OtherDev.
 
 <p align="center">
   <a href="./LICENSE.md"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"></a>
-  <a href="./actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Shopify/skeleton-theme/actions/workflows/ci.yml/badge.svg"></a>
 </p>
 
 ## Getting started
@@ -29,7 +29,7 @@ If you use VS Code:
 Clone this repository using Git or Shopify CLI:
 
 ```bash
-git clone git@github.com:Shopify/skeleton-theme.git
+git clone git@github.com:your-organization/boulevard.git
 # or
 shopify theme init
 ```
@@ -42,17 +42,20 @@ Preview this theme using Shopify CLI:
 shopify theme dev
 ```
 
-## Theme architecture
+## Boulevard Theme Architecture
+
+The Boulevard theme is structured with modularity and performance in mind:
 
 ```bash
 .
-├── assets          # Stores static assets (CSS, JS, images, fonts, etc.)
+├── assets          # Stores compiled and static assets (CSS, JS, images, fonts, etc.)
 ├── blocks          # Reusable, nestable, customizable UI components
 ├── config          # Global theme settings and customization options
 ├── layout          # Top-level wrappers for pages (layout templates)
 ├── locales         # Translation files for theme internationalization
 ├── sections        # Modular full-width page components
 ├── snippets        # Reusable Liquid code or HTML fragments
+├── src             # Source files (uncompiled CSS and JavaScript)
 └── templates       # Templates combining sections to define page structures
 ```
 
@@ -62,9 +65,9 @@ To learn more, refer to the [theme architecture documentation](https://shopify.d
 
 [Templates](https://shopify.dev/docs/storefronts/themes/architecture/templates#template-types) control what's rendered on each type of page in a theme.
 
-The Skeleton Theme scaffolds [JSON templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/json-templates) to make it easy for merchants to customize their store.
+The Boulevard Theme scaffolds [JSON templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/json-templates) to make it easy for merchants to customize their store.
 
-None of the template types are required, and not all of them are included in the Skeleton Theme. Refer to the [template types reference](https://shopify.dev/docs/storefronts/themes/architecture/templates#template-types) for a full list.
+None of the template types are required, and not all of them are included in the Boulevard Theme. Refer to the [template types reference](https://shopify.dev/docs/storefronts/themes/architecture/templates#template-types) for a full list.
 
 ### Sections
 
@@ -145,16 +148,52 @@ When developing components defined by schema settings, we recommend these guidel
 
 For CSS and JavaScript, we recommend using the [`{% stylesheet %}`](https://shopify.dev/docs/api/liquid/tags#stylesheet) and [`{% javascript %}`](https://shopify.dev/docs/api/liquid/tags/javascript) tags. They can be included multiple times, but the code will only appear once.
 
+### Build Process
+
+The Boulevard Theme uses modern development tools:
+
+- **Tailwind CSS** for utility-first styling
+- **Bun** as the JavaScript runtime for builds
+- **Terser** for JavaScript minification
+- **PostCSS** with Autoprefixer for CSS processing
+
 ### `critical.css`
 
-The Skeleton Theme explicitly separates essential CSS necessary for every page into a dedicated `critical.css` file.
+The Boulevard Theme explicitly separates essential CSS necessary for every page into a dedicated `critical.css` file.
 
 ## Contributing
 
-We're excited for your contributions to the Skeleton Theme! This repository aims to remain as lean, lightweight, and fundamental as possible, and we kindly ask your contributions to align with this intention.
+We're excited for your contributions to the Boulevard Theme! This repository aims to remain modern, performant, and a great foundation for e-commerce themes, and we kindly ask your contributions to align with this intention.
 
 Visit our [CONTRIBUTING.md](./CONTRIBUTING.md) for a detailed overview of our process, guidelines, and recommendations.
 
+## Key Features
+
+The Boulevard Theme includes several modern e-commerce features:
+
+### Performance Optimizations
+- **Critical CSS inlining**: Essential CSS is inlined in the layout for faster initial render
+- **Link prefetching**: Navigation links are prefetched on hover/touch for faster page transitions
+- **Lazy loading**: Images and content are loaded as needed to improve performance
+- **Resource hints**: DNS prefetching for faster external resource loading
+
+### Modern Development Stack
+- **Tailwind CSS**: Utility-first CSS framework with custom configuration
+- **Bun runtime**: Fast JavaScript runtime for development and builds
+- **Modular JavaScript**: Organized JS modules for header, lazy loading, and product functionality
+- **PostCSS processing**: With Autoprefixer for cross-browser compatibility
+
+### Responsive Design
+- **CSS Grid layout**: Modern grid-based layout system
+- **Mobile-first approach**: Design optimized for all device sizes
+- **Flexible components**: Sections and blocks that adapt to different screen sizes
+
+### Developer Experience
+- **Component-based architecture**: Reusable sections and blocks
+- **Schema-based customization**: Easy-to-use settings for merchants
+- **Modern build tools**: Automated compilation and minification
+- **Theme settings**: Comprehensive customization options
+
 ## License
 
-Skeleton Theme is open-sourced under the [MIT](./LICENSE.md) License.
+Boulevard Theme is open-sourced under the [MIT](./LICENSE.md) License.
