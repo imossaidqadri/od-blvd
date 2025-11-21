@@ -9,6 +9,18 @@
  */
 {
   "sections": {
+    "hero_rbEnAy": {
+      "type": "hero",
+      "name": "t:general.hero",
+      "settings": {
+        "desktop_image": "shopify://shop_images/034A0519_2.jpg",
+        "min_height_desktop": 85,
+        "mobile_image": "shopify://shop_images/1600x2000.webp",
+        "min_height_mobile": 80,
+        "show_overlay": true,
+        "overlay_opacity": 0.3
+      }
+    },
     "product_grid_QfprHG": {
       "type": "product-grid",
       "name": "t:general.product_grid",
@@ -24,6 +36,7 @@
     }
   },
   "order": [
+    "hero_rbEnAy",
     "product_grid_QfprHG"
   ]
 }
