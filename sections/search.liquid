@@ -5,7 +5,8 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/search
 {% endcomment %}
 
-<h1>{{ 'search.title' | t }}</h1>
+<div class="search-section">
+  <h1>{{ 'search.title' | t }}</h1>
 
 <form action="{{ routes.search_url }}" method="get" role="search">
   <input
@@ -49,8 +50,19 @@
     </div>
   {% endif %}
 {% endif %}
+</div>
 
 {% stylesheet %}
+  .search-section {
+    padding-top: 60px;
+  }
+
+  @media (min-width: 768px) {
+    .search-section {
+      padding-top: 68px;
+    }
+  }
+
   .search-results {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

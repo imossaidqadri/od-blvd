@@ -6,7 +6,8 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/article
 {% endcomment %}
 
-{% if article.image %}
+<div class="article-section">
+  {% if article.image %}
   {% render 'image',
     image: article.image,
     width: 1500,
@@ -65,7 +66,20 @@
 
     <input type="submit" value="{{ 'blog.comment_form_submit' | t }}">
   {% endform %}
-{% endif %}
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .article-section {
+    padding-top: 60px;
+  }
+
+  @media (min-width: 768px) {
+    .article-section {
+      padding-top: 68px;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

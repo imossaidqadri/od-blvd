@@ -5,9 +5,10 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
 {% endcomment %}
 
-<h1>{{ 'cart.title' | t }}</h1>
+<div class="cart-section">
+  <h1>{{ 'cart.title' | t }}</h1>
 
-<form action="{{ routes.cart_url }}" method="post">
+  <form action="{{ routes.cart_url }}" method="post">
   <table>
     {% for item in cart.items %}
       <tr>
@@ -27,7 +28,20 @@
   </table>
 
   <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+  </form>
+</div>
+
+{% stylesheet %}
+  .cart-section {
+    padding-top: 60px;
+  }
+
+  @media (min-width: 768px) {
+    .cart-section {
+      padding-top: 68px;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

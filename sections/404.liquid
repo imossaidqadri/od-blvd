@@ -5,15 +5,29 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/404
 {% endcomment %}
 
-<h1>{{ '404.title' | t }}</h1>
+<div class="not-found-section">
+  <h1>{{ '404.title' | t }}</h1>
 
-<p>
-  {{ '404.not_found' | t }}
-</p>
+  <p>
+    {{ '404.not_found' | t }}
+  </p>
 
-<a href="{{ routes.all_products_collection_url }}">
-  {{ '404.back_to_shopping' | t }}
-</a>
+  <a href="{{ routes.all_products_collection_url }}">
+    {{ '404.back_to_shopping' | t }}
+  </a>
+</div>
+
+{% stylesheet %}
+  .not-found-section {
+    padding-top: 60px;
+  }
+
+  @media (min-width: 768px) {
+    .not-found-section {
+      padding-top: 68px;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
